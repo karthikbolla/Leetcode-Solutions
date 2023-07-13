@@ -12,8 +12,8 @@ class Solution {
             return;
         }
         for(int i=ind;i<arr.length;i++){
-            if(i>ind && arr[i]==arr[i-1]) continue;
             if(arr[i]>target) break;
+            if(i>ind && arr[i]==arr[i-1]) continue;
             list.add(arr[i]);
             combination(i+1,target-arr[i],list,arr,ans);
             list.remove(list.size()-1);
