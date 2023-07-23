@@ -7,53 +7,35 @@ class Solution {
                 board[i][j] = '.';
             }
         }
-        solve(0, n, ans, board);
+        int[] uppdiag=new int[2*n-1];
+        int[] lowdiag=new int[2*n-1];
+        int[] leftrow=new int[n];
+        solve(0, n, ans, board,uppdiag,lowdiag,leftrow);
         return ans;
     }
 
-    private void solve(int col, int n, List<List<String>> ans, char[][] board) {
-        if (col == n) {
+    private void solve(int col, int n, List<List<String>> ans, char[][] board, int[] uppdiag, int[] lowdiag, int[] leftrow) {
+        if(col==n){
             ans.add(constructboard(board));
             return;
         }
-
-        for (int row = 0; row < n; row++) {
-            if (issafe(col, row, board, n)) {
-                board[col][row] = 'Q';
-                solve(col + 1, n, ans, board);
-                board[col][row] = '.';
+        for(int row=0;row<n;row++){
+            if(uppdiag[col+row]==0 && lowdiag[(n-1)+(col-row)]==0 && leftrow[row]==0){
+                board[col][row]='Q';
+                uppdiag[col+row]=1;
+                lowdiag[(n-1)+(col-row)]=1;
+                leftrow[row]=1;
+                solve(col+1,n,ans,board,uppdiag,lowdiag,leftrow);
+                board[col][row]='.';
+                uppdiag[col+row]=0;
+                lowdiag[(n-1)+(col-row)]=0;
+                leftrow[row]=0;
             }
         }
     }
 
-    private boolean issafe(int col, int row, char[][] board, int n) {
-        int dupcol = col;
-        int duprow = row;
-        while (col >= 0 && row >= 0) {
-            if (board[col][row] == 'Q')
-                return false;
-            col--;
-            row--;
-        }
-        col = dupcol;
-        row = duprow;
-        while (col >= 0) {
-            if (board[col][row] == 'Q')
-                return false;
-            col--;
-        }
-        col = dupcol;
-        row = duprow;
-        while (col >= 0 && row < n) {
-            if (board[col][row] == 'Q')
-                return false;
-            col--;
-            row++;
-        }
-        return true;
-    }
 
-    private  List<String> constructboard(char[][] board) {
+    private List<String> constructboard(char[][] board) {
         List<String> sol = new ArrayList<>();
         for (char[] row : board) {
             sol.add(new String(row));
